@@ -26,6 +26,13 @@ jobs:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          
+      - name: Register Azure Resource Providers
+        shell: bash
+        run: |
+           az provider register --namespace Microsoft.Resources
+           az provider register --namespace Microsoft.ContainerRegistry
+           az provider register --namespace Microsoft.ContainerService
 
       - name: Verify Azure Login
         run: |
