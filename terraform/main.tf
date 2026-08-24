@@ -1,9 +1,8 @@
 # In Azure, all infrastructure elements such as virtual machines, storage,
 # and our Kubernetes cluster need to be attached to a resource group.
 
-resource "azurerm_resource_group" "aks-rg" {
-  name     = var.resource_group_name
-  location = var.location
+data "azurerm_resource_group" "aks_rg" {
+  name = "rg-terraform-aks"
 }
 
 resource "azurerm_role_assignment" "role_acrpull" {
@@ -15,7 +14,7 @@ resource "azurerm_role_assignment" "role_acrpull" {
 
 resource "azurerm_container_registry" "acr" {
   name                = var.acr_name
-  resource_group_name = azurerm_resource_group.aks-rg.name
+  resource_group_name = data.azurerm_resource_group.aks_rg.name
   location            = var.location
   sku                 = "Standard"
   admin_enabled       = false
@@ -25,7 +24,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   name                = var.cluster_name
   kubernetes_version  = var.kubernetes_version
   location            = var.location
-  resource_group_name = azurerm_resource_group.aks-rg.name
+  resource_group_name = data.azurerm_resource_group.aks_rg.name
   dns_prefix          = var.cluster_name
 
   default_node_pool {
